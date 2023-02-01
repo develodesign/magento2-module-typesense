@@ -1,0 +1,25 @@
+{
+    "name": "develodesign/typesense",
+    "description": "A TypeSense adapter for Magento 2",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "require": {
+        "algolia/algoliasearch-magento-2": "^3.9",
+        "typesense/typesense-php": "^2.0"
+    },
+    "authors": [
+        {
+            "name": "Nathan McBride",
+            "email": "nathan@brideo.co.uk"
+        },
+        {
+            "name": "Luke Collymore",
+            "email": "luke@develodesign.co.uk"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Develo\\TypeSense": "src/"
+        }
+    }
+}
