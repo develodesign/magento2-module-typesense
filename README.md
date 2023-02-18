@@ -27,7 +27,6 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -99,17 +98,18 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 Luke Collymore - [@lukecollymore](https://twitter.com/lukecollymore) - luke@develodesign.co.uk
+Luke Collymore - [@lukecollymore](https://twitter.com/lukecollymore) - luke@develodesign.co.uk
+@Nathan McBride - nathan@brideo.co.uk
 
 Project Link: [https://github.com/develodesign/magento2-module-typesense](https://github.com/develodesign/magento2-module-typesense)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 Algolia for creating a great product indexing and search configuration module
 * [Algolia Open Source Module](https://github.com/algolia/algoliasearch-magento-2)
-
+* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
