@@ -1,0 +1,8 @@
+
+type StoreConfig {
+    general_settings_cloud_id  : String  @doc(description: "Query by general_settings_cloud_id.") 
+    general_settings_admin_api_key  : String  @doc(description: "Query by general_settings_admin_api_key.") 
+    general_settings_search_only_key  : String  @doc(description: "Query by general_settings_search_only_key.") 
+    general_settings_nodes  : String  @doc(description: "Query by general_settings_nodes.") 
+    general_settings_enabled  : String  @doc(description: "Query by general_settings_enabled.") 
+}
