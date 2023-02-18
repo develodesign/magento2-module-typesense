@@ -98,7 +98,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 Luke Collymore - [@lukecollymore](https://twitter.com/lukecollymore) - luke@develodesign.co.uk
+
 Luke Collymore - [@lukecollymore](https://twitter.com/lukecollymore) - luke@develodesign.co.uk
+
 @Nathan McBride - nathan@brideo.co.uk
 
 Project Link: [https://github.com/develodesign/magento2-module-typesense](https://github.com/develodesign/magento2-module-typesense)
