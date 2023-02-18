@@ -1,8 +1,9 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Develo_TypeSense" setup_version="1.0.0">
+    <module name="Develo_Typesense" setup_version="1.0.0">
         <sequence>
             <module name="Algolia_AlgoliaSearch"/>
+            <module name="Magento_StoreGraphQl"/>
         </sequence>
     </module>
 </config>

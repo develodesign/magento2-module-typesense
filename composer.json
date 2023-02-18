@@ -1,5 +1,5 @@
 {
-    "name": "develodesign/typesense",
+    "name": "develo/typesense",
     "description": "A TypeSense adapter for Magento 2",
     "type": "magento2-module",
     "license": "OSL-3.0",
@@ -18,8 +18,7 @@
         }
     ],
     "autoload": {
-        "psr-4": {
-            "Develo\\TypeSense": "src/"
-        }
+        "files": ["registration.php"],
+        "psr-4": {"Develo\\Typesense\\": ""}
     }
 }

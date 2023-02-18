@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<type name="Magento\StoreGraphQl\Model\Resolver\Store\StoreConfigDataProvider">
+		<arguments>
+			<argument name="extendedConfigData" xsi:type="array">
+				<item name="general_settings_cloud_id" xsi:type="string">general/settings/cloud_id</item>
+				<item name="general_settings_admin_api_key" xsi:type="string">general/settings/admin_api_key</item>
+				<item name="general_settings_search_only_key" xsi:type="string">general/settings/search_only_key</item>
+				<item name="general_settings_nodes" xsi:type="string">general/settings/nodes</item>
+				<item name="general_settings_enabled" xsi:type="string">general/settings/enabled</item>
+			</argument>
+		</arguments>
+	</type>
+</config>
