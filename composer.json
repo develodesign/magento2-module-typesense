@@ -1,11 +1,11 @@
 {
-    "name": "develo/typesense",
+    "name": "develodesign/typesense",
     "description": "A TypeSense adapter for Magento 2",
     "type": "magento2-module",
     "license": "OSL-3.0",
     "require": {
         "algolia/algoliasearch-magento-2": "^3.9",
-        "typesense/typesense-php": "^2.0"
+        "typesense/typesense-php": "^4.8"
     },
     "authors": [
         {
