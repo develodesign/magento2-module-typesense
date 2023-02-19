@@ -1,5 +1,5 @@
 {
-    "name": "develodesign/typesense",
+    "name": "develodesign/magento2-module-typesense",
     "description": "A TypeSense adapter for Magento 2",
     "type": "magento2-module",
     "license": "OSL-3.0",
