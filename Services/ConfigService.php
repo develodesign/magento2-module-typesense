@@ -44,7 +44,7 @@ class ConfigService
      */
     public function isEnabled(): ?int
     {
-        return $this->scopeConfig->getValue(self::TYPESENSE_ENABLED, ScopeConfig::SCOPE_STORE);
+        return (int) $this->scopeConfig->getValue(self::TYPESENSE_ENABLED, ScopeConfig::SCOPE_STORE);
     }
 
     /**

@@ -54,7 +54,7 @@ class Client
      */
     public function addData($indexName, $data)
     {
-        return $this->typeSenseClient->collections[$indexName]->documents->create_many($data, ['action' => 'upsert']);
+        return $this->getTypesenseClient()->collections[$indexName]->getDocuments()->import($data, ['action' => 'upsert']);
     }
 
     /**
