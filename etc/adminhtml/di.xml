@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<type name="Algolia\AlgoliaSearch\Helper\AlgoliaHelper">
-		<plugin name="Develo_Typesense_Plugin_Backend_Algolia_AlgoliaSearch_Helper_AlgoliaHelper" type="Develo\Typesense\Plugin\Backend\Algolia\AlgoliaSearch\Helper\AlgoliaHelper" sortOrder="10" disabled="false"/>
+		<plugin name="Develo_Typesense_Plugin_Backend_Algolia_AlgoliaSearch_Helper_AlgoliaHelper" type="Develo\Typesense\Plugin\Backend\Algolia\AlgoliaSearch\Helper\AlgoliaHelperPlugin" sortOrder="10" disabled="false"/>
 	</type>
 </config>
