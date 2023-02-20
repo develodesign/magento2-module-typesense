@@ -46,7 +46,7 @@ Composer install this module, it will include the Algolia module as a dependancy
 ### Installation
 
    ```shell
-   composer install develodesign/magento2-module-typesense
+   composer require develodesign/magento2-module-typesense
    ```
    
    Add Typesene Configuration

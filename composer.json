@@ -5,7 +5,8 @@
     "license": "OSL-3.0",
     "require": {
         "algolia/algoliasearch-magento-2": "^3.9",
-        "typesense/typesense-php": "^4.8"
+        "typesense/typesense-php": "^4.8",
+        "php-http/curl-client": "^2.2"
     },
     "authors": [
         {
@@ -18,7 +19,11 @@
         }
     ],
     "autoload": {
-        "files": ["registration.php"],
-        "psr-4": {"Develo\\Typesense\\": ""}
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Develo\\Typesense\\": ""
+        }
     }
 }

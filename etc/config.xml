@@ -11,6 +11,8 @@
         <settings>
             <enabled>1</enabled>
             <index_method><![CDATA[typesense]]></index_method>
+            <port><![CDATA[443]]></port>
+            <protocol><![CDATA[https]]></protocol>
         </settings>
     </typesense_general>
 </default>

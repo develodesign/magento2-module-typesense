@@ -3,17 +3,20 @@
 namespace Develo\Typesense\Model\Config\Source;
 
 /**
- * Algolia custom sort order field
+ * Typesense module indexation methods
  */
 class TypeSenseIndexMethod implements \Magento\Framework\Data\OptionSourceInterface
 {
+    const METHOD_TYPESENSE = 'typesense';
+    const METHOD_ALGOLIA = 'algolia';
+    const METHOD_BOTH = 'typesense_algolia';
     /**
      * @var array
      */
     private $methods = [
-        'typesense' => 'Typesense Only',
-        'typesense_algolia' => 'Both Typesense and Aglolia',
-        'algolia' => 'Algolia Only'
+        self::METHOD_TYPESENSE => 'Typesense Only',
+        self::METHOD_BOTH => 'Both Typesense and Aglolia',
+        self::METHOD_ALGOLIA => 'Algolia Only'
     ];
 
     /**
@@ -22,14 +25,12 @@ class TypeSenseIndexMethod implements \Magento\Framework\Data\OptionSourceInterf
     public function toOptionArray()
     {
         $options = [];
-
         foreach ($this->methods as $key => $value) {
             $options[] = [
                 'value' => $key,
                 'label' => __($value),
             ];
         }
-
         return $options;
     }
 }

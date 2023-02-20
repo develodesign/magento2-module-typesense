@@ -15,29 +15,38 @@
 					<comment>Enable Typesense Adapter to override Algolias indexer</comment>
 					<source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
 				</field>
-				<field id="index_method" type="select" sortOrder="15" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-					<label>Index Method</label>
-					<comment>Where should Algolia data be indexed.</comment>
-					<source_model>Develo\Typesense\Model\Config\Source\TypeSenseIndexMethod</source_model>
-				</field>
-				<field id="cloud_id" type="text" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="cloud_id" type="text" sortOrder="20" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Cloud ID</label>
 					<comment/>
 				</field>
-				<field id="admin_api_key" type="obscure" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="admin_api_key" type="obscure" sortOrder="30" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Admin API Key</label>
 					<comment/>
 					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<config_path>typesense_general/settings/admin_api_key</config_path>
 				</field>
-				<field id="search_only_key" type="text" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="search_only_key" type="text" sortOrder="40" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Search Only Key</label>
 					<comment/>
 				</field>
-				<field id="nodes" type="text" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+				<field id="nodes" type="text" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
 					<label>Nodes</label>
 					<comment/>
 				</field>
+                <field id="port" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Nodes</label>
+                    <comment/>
+                </field>
+                <field id="protocol" type="select" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Protocol</label>
+                    <comment>Communication protocol.</comment>
+                    <source_model>Develo\Typesense\Model\Config\Source\TypeSenseProtocol</source_model>
+                </field>
+                <field id="index_method" type="select" sortOrder="90" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Index Method</label>
+                    <comment>Where should Algolia data be indexed.</comment>
+                    <source_model>Develo\Typesense\Model\Config\Source\TypeSenseIndexMethod</source_model>
+                </field>
 			</group>
 		</section>
 	</system>

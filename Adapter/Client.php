@@ -2,10 +2,8 @@
 
 namespace Develo\Typesense\Adapter;
 
-use Devloops\Typesence\Client as TypeSenseClient;
-use \Magento\Store\Model\ScopeInterface as ScopeConfig;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Framework\Encryption\EncryptorInterface;
+use Typesense\Client as TypeSenseClient;
+use Develo\Typesense\Services\ConfigService;
 
 /**
  * Class Client
@@ -17,58 +15,36 @@ use \Magento\Framework\Encryption\EncryptorInterface;
  */
 class Client
 {
+    /**
+     * @var ConfigService
+     */
+    private ConfigService $configService;
 
     /**
-     * Config paths
+     * @var TypeSenseClient|null
      */
-    private const TYPESENSE_API_KEY = 'typesense_general/settings/admin_api_key';
-    private const TYPESENSE_NODES = 'typesense_general/settings/nodes';
-
-    /**
-     * @var TypeSenseClient
-     */
-    private $typeSenseClient;
-
-    /**
-     * encryptor
-     */
-    private $encryptor;
+    private ?TypeSenseClient $typeSenseClient = null;
 
     /**
      * Initialise Typesense Client with Magento config
+     *
+     * @param ConfigService $configService
+     * @throws \Typesense\Exceptions\ConfigError
      */
     public function __construct(
-        EncryptorInterface $encryptor,
-        ScopeConfigInterface $scopeConfig
+        ConfigService $configService,
     )
-    {        
-        $apiKey = $scopeConfig->getValue(SELF::TYPESENSE_API_KEY,ScopeConfig::SCOPE_STORE);
-        $apiKey = $encryptor->decrypt($apiKey);
-
-        $nodes = $scopeConfig->getValue(SELF::TYPESENSE_NODES,ScopeConfig::SCOPE_STORE);
-
-        $client = new TypeSenseClient(
-            [   
-                "api_key" => $apiKey,
-                "nodes"=> 
-                [
-                    [
-                        "host" => $nodes,
-                        "port" => "443", 
-                        "protocol" => "https",
-                        "api_key" => $apiKey
-                    ]
-                ]
-            ]
-        );
-
-        $this->typeSenseClient = $client;
+    {
+        $this->configService = $configService;
     }
 
     /**
-     * @inheirtDoc
+     * @param string $indexName
+     * @return array
+     * @throws \Http\Client\Exception
+     * @throws \Typesense\Exceptions\TypesenseClientError
      */
-    public function deleteIndex($indexName)
+    public function deleteIndex(string $indexName): array
     {
         return $this->typeSenseClient->collections[$indexName]->delete();
     }
@@ -81,7 +57,29 @@ class Client
         return $this->typeSenseClient->collections[$indexName]->documents->create_many($data, ['action' => 'upsert']);
     }
 
-    public function getTypesenseClient(){
+    /**
+     * @return TypeSenseClient
+     */
+    public function getTypesenseClient(): TypeSenseClient
+    {
+        if (is_null($this->typeSenseClient)) {
+            $client = new TypeSenseClient(
+                [
+                    "api_key" => $this->configService->getApiKey(),
+                    "nodes" =>
+                        [
+                            [
+                                "host" => $this->configService->getNodes(),
+                                "port" => $this->configService->getPort(),
+                                "protocol" => $this->configService->getProtocol(),
+                                "api_key" => $this->configService->getApiKey()
+                            ]
+                        ]
+                ]
+            );
+
+            $this->typeSenseClient = $client;
+        }
         return $this->typeSenseClient;
     }
 }
