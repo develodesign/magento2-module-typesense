@@ -24,7 +24,7 @@ class ConfigService
     /**
      * @var ScopeConfigInterface $scopeConfig
      */
-    protected ScopeConfigInterface $scopeConfig;
+    protected $scopeConfig;
 
     /**
      * @param EncryptorInterface $encryptor
@@ -60,7 +60,8 @@ class ConfigService
      */
     public function getApiKey(): ?string
     {
-        $value = $this->scopeConfig->getValue(SELF::TYPESENSE_API_KEY, ScopeConfig::SCOPE_STORE);
+        $value = $this->scopeConfig->getValue(self::TYPESENSE_API_KEY, ScopeConfig::SCOPE_STORE);
+
         return $this->encryptor->decrypt($value);
     }
 
@@ -69,8 +70,7 @@ class ConfigService
      */
     public function getSearchOnlyKey(): ?string
     {
-        $value = $this->scopeConfig->getValue(SELF::TYPESENSE_SEARCH_ONLY_KEY_KEY, ScopeConfig::SCOPE_STORE);
-        return $this->encryptor->decrypt($value);
+        return $this->scopeConfig->getValue(self::TYPESENSE_SEARCH_ONLY_KEY_KEY, ScopeConfig::SCOPE_STORE);
     }
 
     /**

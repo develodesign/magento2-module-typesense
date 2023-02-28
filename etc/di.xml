@@ -2,6 +2,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
-    <preference for="Algolia\AlgoliaSearch\SearchClient" type="Develo\Typesense\Adapter\Client"/>
+    <preference
+        for="Algolia\AlgoliaSearch\SearchClient"
+        type="Develo\Typesense\Adapter\Client"
+    />
 
 </config>

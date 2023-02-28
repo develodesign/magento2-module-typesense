@@ -17,12 +17,12 @@ class AlgoliaHelperPlugin
     /**
      * @var ConfigService
      */
-    protected ConfigService $configService;
+    protected  $configService;
 
     /**
      * @var Client $typesenseClient
      */
-    protected Client $typesenseClient;
+    protected $typesenseClient;
 
     /**
      * @param ConfigService $configService
