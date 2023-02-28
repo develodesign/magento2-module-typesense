@@ -24,7 +24,7 @@ class ConfigService
     /**
      * @var ScopeConfigInterface $scopeConfig
      */
-    protected $scopeConfig;
+    protected ScopeConfigInterface $scopeConfig;
 
     /**
      * @param EncryptorInterface $encryptor
