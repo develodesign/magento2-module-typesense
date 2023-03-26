@@ -34,7 +34,11 @@
 					<comment/>
 				</field>
                 <field id="port" type="text" sortOrder="60" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
-                    <label>Nodes</label>
+                    <label>Port</label>
+                    <comment/>
+                </field>
+                <field id="path" type="text" sortOrder="50" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Path</label>
                     <comment/>
                 </field>
                 <field id="protocol" type="select" sortOrder="80" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">

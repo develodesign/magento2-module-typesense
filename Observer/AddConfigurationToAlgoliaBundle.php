@@ -40,7 +40,7 @@ class AddConfigurationToAlgoliaBundle implements ObserverInterface
                 'nodes' => [
                     [
                         'host' => $this->configService->getNodes(),
-                        'path' => '', // @todo add this
+                        'path' => $this->configService->getPath() ?? '',
                         'port' => $this->configService->getPort(),
                         'protocol' => $this->configService->getProtocol()
                     ]

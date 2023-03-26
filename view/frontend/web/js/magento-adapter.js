@@ -1,11 +1,13 @@
 requirejs([
-    'Develo_Typesense/js/typesense-adapter'
+    'Develo_Typesense/js/typesense-adapter',
+    'domReady!'
 ], function (TypesenseInstantSearchAdapter) {
 
     var isAvailable =
         typeof algoliaConfig !== 'undefined' &&
-        typeof algoliaConfig.typesense !== 'undefined' ||
+        typeof algoliaConfig.typesense !== 'undefined' &&
         typeof algolia !== 'undefined';
+
     if (!isAvailable) {
         return;
     }
