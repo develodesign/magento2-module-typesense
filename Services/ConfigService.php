@@ -17,6 +17,7 @@ class ConfigService
     private const TYPESENSE_API_KEY = 'typesense_general/settings/admin_api_key';
     private const TYPESENSE_SEARCH_ONLY_KEY_KEY = 'typesense_general/settings/search_only_key';
     private const TYPESENSE_NODES = 'typesense_general/settings/nodes';
+    private const TYPESENSE_PATH = 'typesense_general/settings/path';
     private const TYPESENSE_PORT = 'typesense_general/settings/port';
     private const TYPESENSE_PROTOCOL = 'typesense_general/settings/protocol';
     private const TYPESENSE_INDEX_METHOD = 'typesense_general/settings/index_method';
@@ -79,6 +80,14 @@ class ConfigService
     public function getNodes(): ?string
     {
         return $this->scopeConfig->getValue(self::TYPESENSE_NODES, ScopeConfig::SCOPE_STORE);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        return $this->scopeConfig->getValue(self::TYPESENSE_PATH, ScopeConfig::SCOPE_STORE);
     }
 
     /**

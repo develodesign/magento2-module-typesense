@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Algolia\AlgoliaSearch\Block\Algolia;
-use Hyva\AlgoliaSearch\ViewModel\Form;
+use Develo\Typesense\ViewModel\Form;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 
@@ -60,6 +60,7 @@ if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config
         function initInstantSearch() {
             loadScripts(instantsearchScripts).then(() => {
                 algoliaCommon()
+                initHyvaAdapter()
                 initAlgoliaInstantSearch()
             })
         }
