@@ -7,6 +7,9 @@ use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\App\RequestInterface;
 use \Develo\Typesense\Adapter\Client;
 use Algolia\AlgoliaSearch\Helper\Data as AlgoliaHelper;
+use Magento\Store\Model\StoreManagerInterface;
+use Develo\Typesense\Services\ConfigService;
+
 
 class ConfigChange implements ObserverInterface
 {
@@ -32,18 +35,33 @@ class ConfigChange implements ObserverInterface
     private $typeSenseCollecitons;
 
     /**
+     * $var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * @var ConfigService
+     */
+    private ConfigService $configService;
+
+
+    /**
      * ConfigChange constructor.
      * @param RequestInterface $request
      */
     public function __construct(
         RequestInterface $request,
         Client $client,
-        AlgoliaHelper $algoliaHelper
+        AlgoliaHelper $algoliaHelper,
+        StoreManagerInterface $storeManager,
+        ConfigService $configService
     ) {
         $this->request = $request;
         $this->typesenseClient = $client->getTypesenseClient();
         $this->algoliaHelper = $algoliaHelper;
         $this->typeSenseCollecitons = $this->typesenseClient->collections;
+        $this->storeManager = $storeManager;
+        $this->configService = $configService;
     }
 
     /**
@@ -51,19 +69,21 @@ class ConfigChange implements ObserverInterface
      */
     public function execute(EventObserver $observer)
     {
-        $indexes = $this->algoliaHelper->getIndexDataByStoreIds();
-        unset($indexes[0]); //skip admin store
-
+        $indexes = $this->getMagentoIndexes();
         $existingCollections = $this->getExistingCollections();
-
+        
         foreach($indexes as $index){
-            if(!isset($existingCollections[$index["indexName"]."_products"])){
-                $this->typeSenseCollecitons->create(
-                    [
-                        'name' => $index["indexName"]."_products",
-                        'fields' => [['name' => 'name','type' => 'string']]
-                    ]
-                );
+            $requiredIndexes = ['products','categories', 'pages'];
+            foreach($requiredIndexes as $indexToCreate){
+                if(!isset($existingCollections[$index["indexName"]."_{$indexToCreate}"])){
+                    $this->typeSenseCollecitons->create(
+                        [
+                            'name' => $index["indexName"]."_{$indexToCreate}",
+                            'fields' => [['name' => 'name','type' => 'string'],
+                            ['name' => 'objectID','type' => 'string'],['name' => 'id','type' => 'string']]
+                        ]
+                    );
+                }
             }
         }       
         
@@ -81,4 +101,19 @@ class ConfigChange implements ObserverInterface
         }
         return $existingCollections;
     }
+
+    /**
+     * Gets an Aloliga index name for each store
+     */
+    private function getMagentoIndexes(){
+        $indexNames = [];
+        foreach ($this->storeManager->getStores() as $store) {
+            $indexNames[$store->getId()] = [
+                'indexName' => $this->algoliaHelper->getBaseIndexName($store->getId()),
+                'priceKey' => '.' . $store->getCurrentCurrencyCode($store->getId()) . '.default',
+            ];
+        }
+        return $indexNames;
+    }
+
 }

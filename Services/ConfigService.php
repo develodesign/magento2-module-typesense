@@ -6,6 +6,7 @@ namespace Develo\Typesense\Services;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface as ScopeConfig;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Develo\Typesense\Model\Config\Source\TypeSenseIndexMethod;
 
 class ConfigService
 {
@@ -26,6 +27,11 @@ class ConfigService
      */
     protected ScopeConfigInterface $scopeConfig;
 
+    /**
+     * @var EncryptorInterface $encryptor
+     */
+    protected EncryptorInterface $encryptor;
+    
     /**
      * @param EncryptorInterface $encryptor
      * @param ScopeConfigInterface $scopeConfig
@@ -103,5 +109,16 @@ class ConfigService
     public function getIndexMethod(): ?string
     {
         return $this->scopeConfig->getValue(self::TYPESENSE_INDEX_METHOD, ScopeConfig::SCOPE_STORE);
+    }
+
+    /**
+     * Check if Typesense Index Mode is TypesenseOnly
+     */
+    public function isIndexModeTypeSenseOnly(){
+        $indexMethod = $this->getIndexMethod();
+        if( $indexMethod == TypeSenseIndexMethod::METHOD_TYPESENSE ){
+            return true;
+        }
+        return false;
     }
 }

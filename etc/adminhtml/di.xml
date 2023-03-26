@@ -3,4 +3,10 @@
 	<type name="Algolia\AlgoliaSearch\Helper\AlgoliaHelper">
 		<plugin name="Develo_Typesense_Plugin_Backend_Algolia_AlgoliaSearch_Helper_AlgoliaHelper" type="Develo\Typesense\Plugin\Backend\Algolia\AlgoliaSearch\Helper\AlgoliaHelperPlugin" sortOrder="10" disabled="false"/>
 	</type>
+		<type name="Algolia\AlgoliaSearch\Helper\ConfigHelper">
+		<plugin name="Develo_Typesense_Plugin_Algolia_AlgoliaSearch_Helper_ConfigHelper" type="Develo\Typesense\Plugin\Algolia\AlgoliaSearch\Helper\ConfigHelper" sortOrder="10" disabled="false"/>
+	</type>
+	<type name="Algolia\AlgoliaSearch\Model\IndicesConfigurator">
+		<plugin name="Develo_Typesense_Plugin_Algolia_AlgoliaSearch_Model_IndicesConfigurator" type="Develo\Typesense\Plugin\Algolia\AlgoliaSearch\Model\IndicesConfigurator" sortOrder="10" disabled="false"/>
+	</type>
 </config>
