@@ -205,5 +205,34 @@ class AlgoliaHelperPlugin
     } else {
         $result = $proceed();
     }
-    return $result; }
+    return $result; 
+    }
+
+    public function aroundDeleteInactiveProducts(        
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+    ){ 
+        die("here");
+            if ($this->configService->isEnabled()) {
+            $result = [];
+            $indexMethod = $this->configService->getIndexMethod();
+            switch ($indexMethod) {
+                case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_BOTH:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_TYPESENSE:
+                default:
+                    return true;
+            }
+        } else {
+            $result = $proceed();
+        }
+        return $result; 
+    }
+
 }
