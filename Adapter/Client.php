@@ -68,7 +68,6 @@ class Client
             $item['objectID'] = (string)$item['objectID'];
         }
         $indexName = rtrim($indexName, "_tmp");
-     
         return $this->getTypesenseClient()->collections[$indexName]->getDocuments()->import($data, ['action' => 'upsert']);
     }
 
@@ -95,7 +94,7 @@ class Client
           ];
         return ["results" => $this->getTypesenseClient()->collections[$indexName]->documents->search($searchParameters)];
     }
-    
+
 
     /**
      * @return TypeSenseClient
