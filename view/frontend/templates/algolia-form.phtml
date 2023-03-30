@@ -17,7 +17,7 @@ $catalogSearchHelper = $block->getCatalogSearchHelper();
 
 /** @var Form $viewModel */
 $viewModel = $viewModels->require(Form::class);
-$autocompleteConfigScript = 'Hyva_AlgoliaSearch::js/internals/autocompleteConfig.js';
+$autocompleteConfigScript = 'Develo_Typesense::js/internals/autocompleteConfig.js';
 
 if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config->isInstantEnabled())): ?>
     <script>
@@ -55,7 +55,9 @@ if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config
             autocompleteInitialized = true
 
             await loadScripts(autocompleteScripts)
-            await loadScript('<?= $escaper->escapeJs($viewModel->getAssetUrl($autocompleteConfigScript)) ?>')
+            return loadScript('<?= $escaper->escapeJs($viewModel->getAssetUrl($autocompleteConfigScript)) ?>').then(() => {
+                initAutoComplete();
+            });
         }
         function initInstantSearch() {
             loadScripts(instantsearchScripts).then(() => {

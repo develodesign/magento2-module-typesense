@@ -3,6 +3,7 @@
 
 namespace Develo\Typesense\Observer;
 
+use Develo\Typesense\Helper\ConfigChangeHelper;
 use Develo\Typesense\Services\ConfigService;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
@@ -13,18 +14,30 @@ class AddConfigurationToAlgoliaBundle implements ObserverInterface
     /**
      * @var ConfigService
      */
-    private $configService;
+    private ConfigService $configService;
+
+    /**
+     * @var ConfigChangeHelper
+     */
+    private ConfigChangeHelper $configChangeHelper;
 
     /**
      * AddConfigurationToAlgoliaBundle constructor.
      *
      * @param ConfigService $configService
+     * @param ConfigChangeHelper $configChangeHelper
      */
-    public function __construct(ConfigService $configService)
+    public function __construct(ConfigService $configService, ConfigChangeHelper $configChangeHelper)
     {
         $this->configService = $configService;
+        $this->configChangeHelper = $configChangeHelper;
     }
 
+    /**
+     * @param Observer $observer
+     *
+     * @event develo_typesense_add_additional_config
+     */
     public function execute(Observer $observer)
     {
         $configuration = $observer->getData('configuration');
@@ -47,9 +60,13 @@ class AddConfigurationToAlgoliaBundle implements ObserverInterface
                 ],
                 'cacheSearchResultsForSeconds' => '2 * 60'
             ]
-
         ];
 
         $configuration->setData('typesense', $typesenseConfig);
+        $configuration->setData('typesense_searchable', [
+            'products' => $this->configChangeHelper->getSearchableAttributes(),
+            'categories' => $this->configChangeHelper->getSearchableAttributes(ConfigChangeHelper::INDEX_CATEGORIES),
+            'pages' => $this->configChangeHelper->getSearchableAttributes(ConfigChangeHelper::INDEX_PAGES),
+        ]);
     }
 }

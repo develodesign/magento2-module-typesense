@@ -13,9 +13,20 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Typesense\Client as TypeSenseClient;
 
 class ConfigChangeHelper
 {
+
+    const INDEX_PRODUCTS = 'products';
+    const INDEX_CATEGORIES = 'categories';
+    const INDEX_PAGES = 'pages';
+
+    const REQUIRED_INDEXES = [
+        self::INDEX_PRODUCTS,
+        self::INDEX_CATEGORIES,
+        self::INDEX_PAGES
+    ];
 
     /**
      * @var RequestInterface
@@ -23,22 +34,22 @@ class ConfigChangeHelper
     private $request;
 
     /**
-     * $var Client
+     * @var Client
      */
     private $typesenseClient;
 
     /**
-     * $var AlgoliaHelper
+     * @var AlgoliaHelper
      */
     private $algoliaHelper;
 
     /**
-     * $var Devloops\Typesence\Collections
+     * @var TypeSenseClient
      */
     private $typeSenseCollecitons;
 
     /**
-     * $var StoreManagerInterface
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
@@ -97,15 +108,21 @@ class ConfigChangeHelper
             $facets[] = $facet['attribute'];
         }
 
+        $sortingAttributes = [];
+
+        foreach ($this->algoliaConfigHelper->getSorting() as $sorting) {
+            $sortingAttributes[] = $sorting['attribute'];
+        }
+
         $indexes = $this->getMagentoIndexes();
 
         $existingCollections = $this->getExistingCollections();
 
         foreach ($indexes as $index) {
-            $requiredIndexes = ['products', 'categories', 'pages'];
-            foreach ($requiredIndexes as $indexToCreate) {
 
-                $fields = $this->getFields($facets, $indexToCreate);
+            foreach (static::REQUIRED_INDEXES as $indexToCreate) {
+
+                $fields = $this->getFields($facets, $sortingAttributes, $indexToCreate);
 
                 $indexName = $index["indexName"] . "_{$indexToCreate}";
 
@@ -155,7 +172,7 @@ class ConfigChangeHelper
         return $indexNames;
     }
 
-    private function getFields(array $facets, string $index) : array {
+    public function getFields(array $facets, array $sortingAttributes, string $index) : array {
         switch ($index) {
             case 'products':
                 $attributes = $this->algoliaConfigHelper->getProductAdditionalAttributes();
@@ -181,6 +198,7 @@ class ConfigChangeHelper
                     ['name' => 'objectID', 'type' => 'string'],
                     ['name' => 'content', 'type' => 'string'],
                     ['name' => 'slug', 'type' => 'string'],
+                    ['name' => 'name', 'type' => 'string']
                 ];
         }
 
@@ -221,10 +239,23 @@ class ConfigChangeHelper
                 continue;
             }
 
+            if ($attribute->getAttributeCode() === 'sku') {
+                $fields[] = [
+                    'name' => $attribute->getAttributeCode(),
+                    'type' => 'string[]',
+                    'facet' => in_array($attribute->getAttributeCode(), $facets),
+                    'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes),
+                ];
+
+                continue;
+            }
+
             $fields[] = [
                 'name' => $attribute->getAttributeCode(),
                 'type' => $backendTypes[$attribute->getBackendType()],
-                'facet' => in_array($attribute->getAttributeCode(), $facets)
+                'facet' => in_array($attribute->getAttributeCode(), $facets),
+                'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes) &&
+                    in_array($backendTypes[$attribute->getBackendType()], ['float', 'int64']),
             ];
         }
 
@@ -233,5 +264,19 @@ class ConfigChangeHelper
         $fields = array_unique($fields, SORT_REGULAR);
 
         return array_values($fields);
+    }
+
+    public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS) : string
+    {
+        $attributes = [];
+        foreach ($this->getFields([], [], $index) as $field) {
+            if (!in_array($field['type'], ['string', 'string[]'])) {
+                continue;
+            }
+
+            $attributes[] = $field['name'];
+        }
+
+        return implode(',', $attributes);
     }
 }

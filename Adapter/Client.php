@@ -63,35 +63,53 @@ class Client
      */
     public function addData($indexName, $data)
     {
-        foreach($data as &$item){
+        foreach ($data as &$item) {
             $item['id'] = (string)$item['objectID'];
             $item['objectID'] = (string)$item['objectID'];
+
+
+            if (!isset($item['price']) || !isset($item['sku'])) {
+                continue;
+            }
+
+            if (is_string($item['sku'])) {
+                $item['sku'] = [$item['sku']];
+            }
+
+            foreach ($item['price'] as $currency => &$price) {
+
+                $price['special_from_date'] = (string)($price['special_from_date'] ?? '');
+                $price['special_to_date'] = (string)($price['special_to_date'] ?? '');
+
+                $price['default'] = number_format($price['default'], 2);
+            }
         }
         $indexName = rtrim($indexName, "_tmp");
         return $this->getTypesenseClient()->collections[$indexName]->getDocuments()->import($data, ['action' => 'upsert']);
     }
 
-     /**
+    /**
      * @inheirtDoc
      */
     public function deleteData($indexName, $data)
     {
         $searchParameters = [
-            'q'           => implode(",",$data),
-            'query_by'    => 'objectID',
-          ];
+            'q' => implode(",", $data),
+            'query_by' => 'objectID',
+        ];
+
         return $this->getTypesenseClient()->collections[$indexName]->documents->delete($searchParameters);
     }
 
-     /**
+    /**
      * @inheirtDoc
      */
     public function getData($indexName, $data)
     {
         $searchParameters = [
-            'q'           => implode(",",$data),
-            'query_by'    => 'objectID',
-          ];
+            'q' => implode(",", $data),
+            'query_by' => 'objectID',
+        ];
         return ["results" => $this->getTypesenseClient()->collections[$indexName]->documents->search($searchParameters)];
     }
 

@@ -14,22 +14,25 @@ const initHyvaAdapter = () => {
             return;
         }
 
-        var typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
+        var query_by = 'name,categories';
+        if (typeof algoliaConfig.typesense_searchable !== 'undefined') {
+            query_by = algoliaConfig.typesense_searchable.products;
+        }
+
+        window.typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
             server: algoliaConfig.typesense.config,
             additionalSearchParameters: {
-                query_by: 'name,categories'
+                query_by
             }
         });
 
-        var searchClient = typesenseInstantsearchAdapter.searchClient;
-
         algolia.registerHook('beforeInstantsearchInit', function (instantsearchOptions) {
 
-            searchClient.addAlgoliaAgent = function () {
+            window.typesenseInstantsearchAdapter.searchClient.addAlgoliaAgent = function () {
                 // do nothing, function is required.
             }
 
-            instantsearchOptions.searchClient = searchClient;
+            instantsearchOptions.searchClient = window.typesenseInstantsearchAdapter.searchClient;
 
             return instantsearchOptions;
         });
