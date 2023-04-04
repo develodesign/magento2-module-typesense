@@ -36,7 +36,7 @@ class AddConfigurationToAlgoliaBundle implements ObserverInterface
     /**
      * @param Observer $observer
      *
-     * @event develo_typesense_add_additional_config
+     * @event algolia_after_create_configuration
      */
     public function execute(Observer $observer)
     {
@@ -61,6 +61,22 @@ class AddConfigurationToAlgoliaBundle implements ObserverInterface
                 'cacheSearchResultsForSeconds' => '2 * 60'
             ]
         ];
+
+        $items = [];
+        $indexName = $configuration->getData('indexName').'_products';
+        foreach ($configuration->getData('sortingIndices') as &$sorting) {
+
+            if ($sorting['attribute'] === 'price') {
+                $sorting['attribute'] = 'price_default';
+            }
+
+            $items[] = [
+                'label' => $sorting['label'],
+                'name' => sprintf('%s/sort/%s:%s', $indexName, $sorting['attribute'], $sorting['sort'])
+            ];
+        }
+
+        $configuration->setData('sortingIndices', $items);
 
         $configuration->setData('typesense', $typesenseConfig);
         $configuration->setData('typesense_searchable', [

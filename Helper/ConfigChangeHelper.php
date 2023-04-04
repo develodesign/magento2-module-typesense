@@ -28,6 +28,8 @@ class ConfigChangeHelper
         self::INDEX_PAGES
     ];
 
+    const SORTABLE_ATTRIBUTES = ['float', 'int64', 'string'];
+
     /**
      * @var RequestInterface
      */
@@ -236,6 +238,12 @@ class ConfigChangeHelper
                     'type' => 'object'
                 ];
 
+                $fields[] = [
+                    'name' => 'price_default',
+                    'type' => 'float',
+                    'sort' => true
+                ];
+
                 continue;
             }
 
@@ -255,7 +263,7 @@ class ConfigChangeHelper
                 'type' => $backendTypes[$attribute->getBackendType()],
                 'facet' => in_array($attribute->getAttributeCode(), $facets),
                 'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes) &&
-                    in_array($backendTypes[$attribute->getBackendType()], ['float', 'int64']),
+                    in_array($backendTypes[$attribute->getBackendType()], self::SORTABLE_ATTRIBUTES),
             ];
         }
 
