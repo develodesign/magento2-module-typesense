@@ -59,6 +59,7 @@ if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config
                 initAutoComplete();
             });
         }
+
         function initInstantSearch() {
             loadScripts(instantsearchScripts).then(() => {
                 algoliaCommon()
@@ -75,7 +76,7 @@ if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config
             }
         }
 
-        if (algoliaConfig.instant.enabled && algoliaConfig.isSearchPage) {
+        if (algoliaConfig.instant.enabled) {
             initInstantSearch()
         }
     </script>
