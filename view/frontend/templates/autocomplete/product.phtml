@@ -1,0 +1,61 @@
+<?php
+
+/** @var \Algolia\AlgoliaSearch\Block\Algolia $block */
+$priceKey = $block->getPriceKey();
+
+$origFormatedVar = 'price' . $priceKey . '_original_formated';
+$tierFormatedVar = 'price' . $priceKey . '_tier_formated'
+
+?>
+
+<!-- Product hit template -->
+<script type="text/template" id="autocomplete_products_template">
+    <a class="algoliasearch-autocomplete-hit"
+       {{^__queryID}} href="{{url}}" {{/__queryID}}
+    {{#__queryID}} href="{{urlForInsights}}" {{/__queryID}}
+    >
+    {{#thumbnail_url}}
+    <div class="thumb"><img src="{{thumbnail_url}}" alt="{{{name}}}" /></div>
+    {{/thumbnail_url}}
+
+    <div class="info">
+        {{{_highlightResult.name.value}}}
+
+        <div class="algoliasearch-autocomplete-category">
+            {{#categories_without_path}}
+            <?php echo $block->escapeHtml(__('in')); ?> {{{categories_without_path}}}
+            {{/categories_without_path}}
+
+            {{#_highlightResult.color}}
+            {{#_highlightResult.color.value}}
+            <span>
+                    {{#categories_without_path}} | {{/categories_without_path}}
+                    Color: {{{_highlightResult.color.value}}}
+                </span>
+            {{/_highlightResult.color.value}}
+            {{/_highlightResult.color}}
+        </div>
+
+        <div class="algoliasearch-autocomplete-price">
+                    <span class="after_special
+                                {{#<?php echo $block->escapeHtml($origFormatedVar); ?>}}
+                                    promotion
+                                {{/<?php echo $block->escapeHtml($origFormatedVar); ?>}}">
+                        {{price<?php echo $block->escapeHtml($priceKey); ?>_formated}}
+                    </span>
+
+            {{#<?php echo $block->escapeHtml($origFormatedVar); ?>}}
+            <span class="before_special">
+                        {{<?php echo $block->escapeHtml($origFormatedVar); ?>}}
+                    </span>
+            {{/<?php echo $block->escapeHtml($origFormatedVar); ?>}}
+            {{#<?php echo $block->escapeHtml($tierFormatedVar); ?>}}
+            <span class="tier_price">
+                        <?php echo __('As low as') ?>
+                        <span class="tier_value">{{<?php echo $block->escapeHtml($tierFormatedVar); ?>}}</span>
+                    </span>
+            {{/<?php echo $block->escapeHtml($tierFormatedVar); ?>}}
+        </div>
+    </div>
+    </a>
+</script>
