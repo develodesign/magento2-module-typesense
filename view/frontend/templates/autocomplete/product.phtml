@@ -10,7 +10,7 @@ $tierFormatedVar = 'price' . $priceKey . '_tier_formated'
 
 <!-- Product hit template -->
 <script type="text/template" id="autocomplete_products_template">
-    <a class="algoliasearch-autocomplete-hit"
+    <a class="algoliasearch-autocomplete-hit flex gap-x-2"
        {{^__queryID}} href="{{url}}" {{/__queryID}}
     {{#__queryID}} href="{{urlForInsights}}" {{/__queryID}}
     >
@@ -18,10 +18,13 @@ $tierFormatedVar = 'price' . $priceKey . '_tier_formated'
     <div class="thumb"><img src="{{thumbnail_url}}" alt="{{{name}}}" /></div>
     {{/thumbnail_url}}
 
-    <div class="info">
-        {{{_highlightResult.name.value}}}
+    <div class="info w-full flex flex-wrap">
+        
+    <div class="typesense-product-name w-full leading-none text-sm">
+        {{{ name }}}
+    </div>
 
-        <div class="algoliasearch-autocomplete-category">
+        <!-- <div class="algoliasearch-autocomplete-category">
             {{#categories_without_path}}
             <?php echo $block->escapeHtml(__('in')); ?> {{{categories_without_path}}}
             {{/categories_without_path}}
@@ -34,10 +37,9 @@ $tierFormatedVar = 'price' . $priceKey . '_tier_formated'
                 </span>
             {{/_highlightResult.color.value}}
             {{/_highlightResult.color}}
-        </div>
-
-        <div class="algoliasearch-autocomplete-price">
-                    <span class="after_special
+        </div> -->
+        <div class="algoliasearch-autocomplete-price flex items-center flex-wrap gap-2 ">
+                    <span class="after_special text-sm
                                 {{#<?php echo $block->escapeHtml($origFormatedVar); ?>}}
                                     promotion
                                 {{/<?php echo $block->escapeHtml($origFormatedVar); ?>}}">
@@ -45,7 +47,7 @@ $tierFormatedVar = 'price' . $priceKey . '_tier_formated'
                     </span>
 
             {{#<?php echo $block->escapeHtml($origFormatedVar); ?>}}
-            <span class="before_special">
+            <span class="before_special line-through text-red text-xs">
                         {{<?php echo $block->escapeHtml($origFormatedVar); ?>}}
                     </span>
             {{/<?php echo $block->escapeHtml($origFormatedVar); ?>}}

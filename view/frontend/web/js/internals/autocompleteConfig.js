@@ -111,8 +111,8 @@ const initAutoComplete = () => {
                     window.location.href = `${resultURL}?q=${params.state.query}`
                 },
                 classNames: {
-                    list: 'w-full flex flex-wrap',
-                    item: 'w-full lg:w-1/2 flex-grow p-2 hover:bg-gray-200',
+                    list: 'w-full flex flex-wrap py-4 px-2',
+                    item: 'w-full lg:w-1/2 p-2 hover:bg-gray-200',
                     sourceHeader: 'px-2 py-4 uppercase tracking-widest text-blue-500',
                     source: 'flex flex-col',
                     panel: 'mx-4 absolute w-full bg-white z-50 border border-gray-300',
@@ -165,8 +165,8 @@ const initAutoComplete = () => {
 
                     render(
                         html`<div class="relative w-full flex flex-col lg:flex-row">
-      <div class="w-full lg:w-2/3 lg:order-1 lg:border-l-2">${products}</div>
-      <div class="w-full lg:w-1/3 px-1 pt-2 pb-10 md:px-2 md:pt-4">${categories} ${pages}</div>
+      <div class="w-full lg:order-1 lg:border-l-2">${products}</div>
+      <div class="w-full px-1 pb-10 md:px-2">${categories} ${pages}</div>
       </div>`,
                         root
                     );
