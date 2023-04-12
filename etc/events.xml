@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="algolia_after_create_product_object">
+        <observer name="typesense_add_default_price_to_object" instance="Develo\Typesense\Observer\AddDefaultPriceObserver"/>
+    </event>
+</config>

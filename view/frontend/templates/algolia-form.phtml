@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+use Algolia\AlgoliaSearch\Block\Algolia;
+use Develo\Typesense\ViewModel\Form;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+
+/** @var Algolia $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$config = $block->getConfigHelper();
+
+$catalogSearchHelper = $block->getCatalogSearchHelper();
+
+/** @var Form $viewModel */
+$viewModel = $viewModels->require(Form::class);
+$autocompleteConfigScript = 'Develo_Typesense::js/internals/autocompleteConfig.js';
+
+if ($config->isDefaultSelector() && ($config->isAutoCompleteEnabled() || $config->isInstantEnabled())): ?>
+    <script>
+        //todo move result url to view model
+        const algoliaConfig = Object.assign(
+            <?= /** @noEscape */ $viewModel->getJsConfig(); ?>, {
+                resultURL:'<?= $escaper->escapeJs($catalogSearchHelper->getResultUrl()) ?>',
+                placeholder: '<?= $escaper->escapeJs($block->escapeHtml(__('Search:'))) ?>'
+            }
+        )
+        const instantsearchScripts = <?= $viewModel->getInstantsearchScripts() ?>
+
+        const autocompleteScripts = <?= $viewModel->getAutocompleteScripts() ?>
+
+        function loadScript (url) {
+            let script = document.createElement('script')
+            script.setAttribute('type', 'text/javascript')
+            script.setAttribute('src', url)
+            document.head.append(script)
+
+            return new Promise((resolve) => script.addEventListener('load', resolve))
+        }
+
+        function loadScripts(scripts) {
+            return Promise.all(scripts.map(loadScript))
+        }
+
+        let autocompleteInitialized = false
+
+        async function initAlgoliaAutoComplete() {
+            if (autocompleteInitialized) {
+                return
+            }
+
+            autocompleteInitialized = true
+
+            await loadScripts(autocompleteScripts)
+            return loadScript('<?= $escaper->escapeJs($viewModel->getAssetUrl($autocompleteConfigScript)) ?>').then(() => {
+                initAutoComplete();
+            });
+        }
+
+        function initInstantSearch() {
+            loadScripts(instantsearchScripts).then(() => {
+                algoliaCommon()
+                initHyvaAdapter()
+                initAlgoliaInstantSearch()
+            })
+        }
+
+        if (algoliaConfig.autocomplete.enabled) {
+            document.getElementById('menu-search-icon').onclick = async () => {
+                await initAlgoliaAutoComplete()
+                // autocomplete library autoFocus configuration param doesn't work
+                document.querySelector('#algolia-autocomplete-container input').focus()
+            }
+        }
+
+        if (algoliaConfig.instant.enabled) {
+            initInstantSearch()
+        }
+    </script>
+    <div class="w-full flex justify-center py-2">
+        <div class="w-full md:w-5/6 xl:w-9/12 2xl:w-1/2" >
+            <?= $block->getChildHtml('autocomplete'); ?>
+        </div>
+    </div>
+<?php endif; ?>
+

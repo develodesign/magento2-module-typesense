@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="hyva_config_generate_before">
+        <observer name="develo_typesense" instance="Develo\Typesense\Observer\RegisterModuleForHyvaConfig"/>
+    </event>
+    <event name="algolia_after_create_configuration">
+        <observer name="develo_typesense_add_additional_config" instance="Develo\Typesense\Observer\AddConfigurationToAlgoliaBundle"/>
+    </event>
+</config>

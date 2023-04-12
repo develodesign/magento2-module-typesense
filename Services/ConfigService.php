@@ -6,6 +6,7 @@ namespace Develo\Typesense\Services;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface as ScopeConfig;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Develo\Typesense\Model\Config\Source\TypeSenseIndexMethod;
 
 class ConfigService
 {
@@ -17,6 +18,7 @@ class ConfigService
     private const TYPESENSE_API_KEY = 'typesense_general/settings/admin_api_key';
     private const TYPESENSE_SEARCH_ONLY_KEY_KEY = 'typesense_general/settings/search_only_key';
     private const TYPESENSE_NODES = 'typesense_general/settings/nodes';
+    private const TYPESENSE_PATH = 'typesense_general/settings/path';
     private const TYPESENSE_PORT = 'typesense_general/settings/port';
     private const TYPESENSE_PROTOCOL = 'typesense_general/settings/protocol';
     private const TYPESENSE_INDEX_METHOD = 'typesense_general/settings/index_method';
@@ -26,6 +28,11 @@ class ConfigService
      */
     protected ScopeConfigInterface $scopeConfig;
 
+    /**
+     * @var EncryptorInterface $encryptor
+     */
+    protected EncryptorInterface $encryptor;
+    
     /**
      * @param EncryptorInterface $encryptor
      * @param ScopeConfigInterface $scopeConfig
@@ -60,7 +67,8 @@ class ConfigService
      */
     public function getApiKey(): ?string
     {
-        $value = $this->scopeConfig->getValue(SELF::TYPESENSE_API_KEY, ScopeConfig::SCOPE_STORE);
+        $value = $this->scopeConfig->getValue(self::TYPESENSE_API_KEY, ScopeConfig::SCOPE_STORE);
+
         return $this->encryptor->decrypt($value);
     }
 
@@ -69,8 +77,7 @@ class ConfigService
      */
     public function getSearchOnlyKey(): ?string
     {
-        $value = $this->scopeConfig->getValue(SELF::TYPESENSE_SEARCH_ONLY_KEY_KEY, ScopeConfig::SCOPE_STORE);
-        return $this->encryptor->decrypt($value);
+        return $this->scopeConfig->getValue(self::TYPESENSE_SEARCH_ONLY_KEY_KEY, ScopeConfig::SCOPE_STORE);
     }
 
     /**
@@ -79,6 +86,14 @@ class ConfigService
     public function getNodes(): ?string
     {
         return $this->scopeConfig->getValue(self::TYPESENSE_NODES, ScopeConfig::SCOPE_STORE);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPath(): ?string
+    {
+        return $this->scopeConfig->getValue(self::TYPESENSE_PATH, ScopeConfig::SCOPE_STORE);
     }
 
     /**
@@ -103,5 +118,16 @@ class ConfigService
     public function getIndexMethod(): ?string
     {
         return $this->scopeConfig->getValue(self::TYPESENSE_INDEX_METHOD, ScopeConfig::SCOPE_STORE);
+    }
+
+    /**
+     * Check if Typesense Index Mode is TypesenseOnly
+     */
+    public function isIndexModeTypeSenseOnly(){
+        $indexMethod = $this->getIndexMethod();
+        if( $indexMethod == TypeSenseIndexMethod::METHOD_TYPESENSE ){
+            return true;
+        }
+        return false;
     }
 }

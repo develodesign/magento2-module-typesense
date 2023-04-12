@@ -4,6 +4,7 @@ namespace Develo\Typesense\Adapter;
 
 use Typesense\Client as TypeSenseClient;
 use Develo\Typesense\Services\ConfigService;
+use Algolia\AlgoliaSearch\Helper\Data as AlgoliaHelper;
 
 /**
  * Class Client
@@ -26,16 +27,24 @@ class Client
     private ?TypeSenseClient $typeSenseClient = null;
 
     /**
+     * $var AlgoliaHelper
+     */
+    private $algoliaHelper;
+
+    /**
      * Initialise Typesense Client with Magento config
      *
      * @param ConfigService $configService
+     * @param AlgoliaHelper $algoliaHelper
      * @throws \Typesense\Exceptions\ConfigError
      */
     public function __construct(
         ConfigService $configService,
+        AlgoliaHelper $algoliaHelper
     )
     {
         $this->configService = $configService;
+        $this->algoliaHelper = $algoliaHelper;
     }
 
     /**
@@ -54,8 +63,56 @@ class Client
      */
     public function addData($indexName, $data)
     {
+        foreach ($data as &$item) {
+            $item['id'] = (string)$item['objectID'];
+            $item['objectID'] = (string)$item['objectID'];
+
+
+            if (!isset($item['price']) || !isset($item['sku'])) {
+                continue;
+            }
+
+            if (is_string($item['sku'])) {
+                $item['sku'] = [$item['sku']];
+            }
+
+            foreach ($item['price'] as $currency => &$price) {
+
+                $price['special_from_date'] = (string)($price['special_from_date'] ?? '');
+                $price['special_to_date'] = (string)($price['special_to_date'] ?? '');
+
+                $price['default'] = number_format($price['default'], 2);
+            }
+        }
+        $indexName = rtrim($indexName, "_tmp");
         return $this->getTypesenseClient()->collections[$indexName]->getDocuments()->import($data, ['action' => 'upsert']);
     }
+
+    /**
+     * @inheirtDoc
+     */
+    public function deleteData($indexName, $data)
+    {
+        $searchParameters = [
+            'q' => implode(",", $data),
+            'query_by' => 'objectID',
+        ];
+
+        return $this->getTypesenseClient()->collections[$indexName]->documents->delete($searchParameters);
+    }
+
+    /**
+     * @inheirtDoc
+     */
+    public function getData($indexName, $data)
+    {
+        $searchParameters = [
+            'q' => implode(",", $data),
+            'query_by' => 'objectID',
+        ];
+        return ["results" => $this->getTypesenseClient()->collections[$indexName]->documents->search($searchParameters)];
+    }
+
 
     /**
      * @return TypeSenseClient
@@ -82,6 +139,7 @@ class Client
         }
         return $this->typeSenseClient;
     }
+
 }
 
 

@@ -42,9 +42,9 @@ class AlgoliaHelperPlugin
      */
     public function aroundAddObjects(
         \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
-        \Closure                                    $proceed,
-                                                    $objects,
-                                                    $indexName
+        \Closure $proceed,
+        $objects,
+        $indexName
     )
     {
         if ($this->configService->isEnabled()) {
@@ -68,4 +68,171 @@ class AlgoliaHelperPlugin
         }
         return $result;
     }
+
+     /**
+     * Indexes data if config is set todo, will index into algolia or typesense or both
+     */
+    public function aroundDeleteObjects(
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+    )
+    {
+        if ($this->configService->isEnabled()) {
+            $result = [];
+            $indexMethod = $this->configService->getIndexMethod();
+            switch ($indexMethod) {
+                case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_BOTH:
+                    $this->typesenseClient->deleteData($indexName, $objects);
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_TYPESENSE:
+                default:
+                    $this->typesenseClient->deleteData($indexName, $objects);
+                    break;
+            }
+        } else {
+            $result = $proceed();
+        }
+        return $result;
+    }
+
+    /**
+     * Indexes data if config is set todo, will index into algolia or typesense or both
+     */
+    public function aroundGetObjects(
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+    )
+    {
+        if ($this->configService->isEnabled()) {
+            $result = [];
+            $indexMethod = $this->configService->getIndexMethod();
+            switch ($indexMethod) {
+                case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_BOTH:
+                    $result = $proceed();
+                    return $this->typesenseClient->getData($indexName, $objects);
+                    break;
+                case TypeSenseIndexMethod::METHOD_TYPESENSE:
+                default:
+                    return $this->typesenseClient->getData($indexName, $objects);
+            }
+        } else {
+            $result = $proceed();
+        }
+        return $result;
+    }
+
+    public function aroundCopyQueryRules(        
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+        ){ 
+        if ($this->configService->isEnabled()) {
+        $result = [];
+        $indexMethod = $this->configService->getIndexMethod();
+        switch ($indexMethod) {
+            case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_BOTH:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_TYPESENSE:
+            default:
+                return true;
+        }
+    } else {
+        $result = $proceed();
+    }
+    return $result; }
+
+    public function aroundMoveIndex(        
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+        ){ 
+        if ($this->configService->isEnabled()) {
+        $result = [];
+        $indexMethod = $this->configService->getIndexMethod();
+        switch ($indexMethod) {
+            case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_BOTH:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_TYPESENSE:
+            default:
+                return true;
+        }
+    } else {
+        $result = $proceed();
+    }
+    return $result; }
+
+    public function aroundSetSettings(        
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+        ){ 
+        if ($this->configService->isEnabled()) {
+        $result = [];
+        $indexMethod = $this->configService->getIndexMethod();
+        switch ($indexMethod) {
+            case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_BOTH:
+                $result = $proceed();
+                break;
+            case TypeSenseIndexMethod::METHOD_TYPESENSE:
+            default:
+                return true;
+        }
+    } else {
+        $result = $proceed();
+    }
+    return $result; 
+    }
+
+    public function aroundDeleteInactiveProducts(        
+        \Algolia\AlgoliaSearch\Helper\AlgoliaHelper $subject,
+        \Closure $proceed,
+        $indexName,
+        $objects
+    ){ 
+        die("here");
+            if ($this->configService->isEnabled()) {
+            $result = [];
+            $indexMethod = $this->configService->getIndexMethod();
+            switch ($indexMethod) {
+                case TypeSenseIndexMethod::METHOD_ALGOLIA:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_BOTH:
+                    $result = $proceed();
+                    break;
+                case TypeSenseIndexMethod::METHOD_TYPESENSE:
+                default:
+                    return true;
+            }
+        } else {
+            $result = $proceed();
+        }
+        return $result; 
+    }
+
 }
