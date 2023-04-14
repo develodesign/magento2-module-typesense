@@ -235,21 +235,8 @@ class ConfigChangeHelper
 
         $attributeCollection = $this->attributeRepository->getList($entityTypeCode, $searchCriteria->create());
 
-        $backendTypes = [
-            'datetime' => 'string',
-            'decimal' => 'float',
-            'int' => 'int64',
-            'static' => 'string',
-            'text' => 'string',
-            'varchar' => 'string'
-        ];
-
         $fields = [];
         foreach ($attributeCollection->getItems() as $attribute) {
-            if (!isset($backendTypes[$attribute->getBackendType()]) || !$attribute->getIsRequired()) {
-                continue;
-            }
-
             if ($attribute->getAttributeCode() === 'price') {
                 $fields[] = [
                     'name' => $attribute->getAttributeCode(),
@@ -276,12 +263,18 @@ class ConfigChangeHelper
                 continue;
             }
 
+            $isFacet = in_array($attribute->getAttributeCode(), $facets);
+
+            if (!$isFacet) {
+                continue;
+            }
+
             $fields[] = [
                 'name' => $attribute->getAttributeCode(),
-                'type' => $backendTypes[$attribute->getBackendType()],
-                'facet' => in_array($attribute->getAttributeCode(), $facets),
-                'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes) &&
-                    in_array($backendTypes[$attribute->getBackendType()], self::SORTABLE_ATTRIBUTES),
+                'type' => 'string[]',
+                'facet' => $isFacet,
+                'sort' => false,
+                'optional' => !$attribute->getIsRequired()
             ];
         }
 
