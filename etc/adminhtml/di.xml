@@ -12,4 +12,8 @@
 	<type name="Algolia\AlgoliaSearch\Model\IndicesConfigurator">
 		<plugin name="Develo_Typesense_Plugin_Algolia_AlgoliaSearch_Model_IndicesConfigurator" type="Develo\Typesense\Plugin\Algolia\AlgoliaSearch\Model\IndicesConfigurator" sortOrder="10" disabled="false"/>
 	</type>
+
+    <type name="Algolia\AlgoliaSearch\Model\Observer\SaveSettings">
+        <plugin name="Develo_Typesense_Plugin_Algolia_AlgoliaSearch_Model_SaveSettings" type="Develo\Typesense\Plugin\Algolia\AlgoliaSearch\Model\SaveSettings" sortOrder="10" disabled="false"/>
+    </type>
 </config>

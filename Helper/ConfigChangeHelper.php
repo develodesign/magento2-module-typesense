@@ -103,6 +103,9 @@ class ConfigChangeHelper
      */
     public function setCollectionConfig()
     {
+        if (!$this->configService->isTypeSenseEnabled()) {
+            return $this;
+        }
 
         $facets = [];
 
@@ -127,6 +130,11 @@ class ConfigChangeHelper
                 $fields = $this->getFields($facets, $sortingAttributes, $indexToCreate);
 
                 $indexName = $index["indexName"] . "_{$indexToCreate}";
+
+                if (isset($existingCollections[$indexName])) {
+                    $this->typesenseClient->collections[$indexName]->delete();
+                    unset($existingCollections[$indexName]);
+                }
 
                 if (!isset($existingCollections[$indexName])) {
 
@@ -185,6 +193,16 @@ class ConfigChangeHelper
                     ['name' => 'visibility_search', 'type' => 'int64'],
                     ['name' => 'visibility_catalog', 'type' => 'int64', 'facet' => true]
                 ];
+
+                // The hierarchal menu widget expects 10 levels of category.
+                for ($i = 0; $i < 10; $i++) {
+                    $defaultAttributes[] = [
+                        'name' => 'categories.level'.$i,
+                        'type' => 'string[]',
+                        'facet' => true,
+                        'optional' => true
+                    ];
+                }
 
                 break;
             case 'categories':

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="admin_system_config_changed_section_typesense_general">
         <observer name="develo_typesense_admin_system_config_changed_section_typesense_general" instance="Develo\Typesense\Observer\ConfigChange"/>
+    </event>
+    <event name="admin_system_config_changed_section_algoliasearch_autocomplete">
+        <observer name="develo_typesense_admin_system_config_changed_section_algoliasearch_autocomplete" instance="Develo\Typesense\Observer\ConfigChange"/>
+    </event>
+    <event name="admin_system_config_changed_section_algoliasearch_instant">
+        <observer name="develo_typesense_admin_system_config_changed_section_algoliasearch_instant" instance="Develo\Typesense\Observer\ConfigChange"/>
+    </event>
+    <event name="admin_system_config_changed_section_algoliasearch_products">
+        <observer name="develo_typesense_admin_system_config_changed_section_algoliasearch_products" instance="Develo\Typesense\Observer\ConfigChange"/>
+    </event>
+    <event name="admin_system_config_changed_section_algoliasearch_categories">
+        <observer name="develo_typesense_admin_system_config_changed_section_algoliasearch_categories" instance="Develo\Typesense\Observer\ConfigChange"/>
+    </event>
+    <event name="admin_system_config_changed_section_algoliasearch_extra_settings">
+        <observer name="develo_typesense_admin_system_config_changed_section_algoliasearch_extra_settings" instance="Develo\Typesense\Observer\ConfigChange"/>
     </event>
 </config>

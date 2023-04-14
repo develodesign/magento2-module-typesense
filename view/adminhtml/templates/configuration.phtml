@@ -1,0 +1,66 @@
+<?php
+
+use Develo\Typesense\ViewModel\Adminhtml\Configuration;
+use Magento\Backend\Block\Template;
+
+/**
+ * @var Template $block
+ * @var Template $viewModel
+ */
+$viewModel = $block->getData('view_model');
+if (!$viewModel instanceof Configuration) {
+    return '';
+}
+
+if (!$viewModel->isTypeSenseEnabled()) {
+    return '';
+}
+
+?>
+
+<script>
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function initWarning($) {
+        $('#save').click(async function (e) {
+            e.preventDefault();
+            const response = await confirm("Changing the configuration requires deleting the existing collections in Type Sense, which in turn requires the user to reindex their data. Proceed with save?");
+
+            if (!response) {
+                location.reload();
+                await sleep(10000);
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+            requirejs(['jquery'], function($) {
+                const urls = [
+                    'section/typesense_',
+                    'section/algoliasearch_autocomplete',
+                    'section/algoliasearch_instant',
+                    'section/algoliasearch_products',
+                    'section/algoliasearch_categories',
+                    'section/algoliasearch_extra_settings'
+                ];
+
+                let isActive = false;
+
+                urls.forEach(function (u) {
+                    const url = window.location.href;
+
+                    if (url.indexOf(u) !== -1) {
+                        isActive = true;
+                    }
+                });
+
+                if (isActive) {
+                    initWarning($);
+                }
+            });
+    });
+</script>

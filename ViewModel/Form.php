@@ -63,6 +63,7 @@ class Form implements ArgumentInterface
     public function getAutocompleteScripts() {
         return $this->json->serialize(
             [
+                $this->getAssetUrl('Hyva_AlgoliaSearch::js/internals/algoliaBundle.min.js'),
                 $this->getAssetUrl('Hyva_AlgoliaSearch::js/internals/autocomplete-js.js'),
                 $this->getAssetUrl('Hyva_AlgoliaSearch::js/internals/algoliasearch.js'),
                 $this->getAssetUrl('Hyva_AlgoliaSearch::js/internals/algoliasearch-query-suggestion-plugin.js')
