@@ -31,7 +31,7 @@ class SaveSettings
         \Closure $proceed
     ) {
         if($this->configService->isIndexModeTypeSenseOnly()){
-            return true;
+            return;
         }
 
         $result = $proceed();

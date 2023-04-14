@@ -136,18 +136,15 @@ class ConfigChangeHelper
                     unset($existingCollections[$indexName]);
                 }
 
-                if (!isset($existingCollections[$indexName])) {
 
-                    $this->typeSenseCollecitons->create(
-                        [
-                            'name' => $indexName,
-                            'enable_nested_fields' => true,
-                            'fields' => $fields
-                        ]
-                    );
+                $this->typeSenseCollecitons->create(
+                    [
+                        'name' => $indexName,
+                        'enable_nested_fields' => true,
+                        'fields' => $fields
+                    ]
+                );
 
-                    continue;
-                }
             }
         }
 
@@ -182,7 +179,8 @@ class ConfigChangeHelper
         return $indexNames;
     }
 
-    public function getFields(array $facets, array $sortingAttributes, string $index) : array {
+    public function getFields(array $facets, array $sortingAttributes, string $index): array
+    {
         switch ($index) {
             case 'products':
                 $attributes = $this->algoliaConfigHelper->getProductAdditionalAttributes();
@@ -197,7 +195,7 @@ class ConfigChangeHelper
                 // The hierarchal menu widget expects 10 levels of category.
                 for ($i = 0; $i < 10; $i++) {
                     $defaultAttributes[] = [
-                        'name' => 'categories.level'.$i,
+                        'name' => 'categories.level' . $i,
                         'type' => 'string[]',
                         'facet' => true,
                         'optional' => true
@@ -285,7 +283,7 @@ class ConfigChangeHelper
         return array_values($fields);
     }
 
-    public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS) : string
+    public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS): string
     {
         $attributes = [];
         foreach ($this->getFields([], [], $index) as $field) {
