@@ -1,115 +1,87 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a name="readme-top"></a>
+# Magento 2 Typesense Search Integration Module
 
-<!-- PROJECT LOGO -->
-<br />
-<div>
-  <h3 align="center">Magento 2 Typesense Adapter Module</h3>
+This module integrates the Typesense search engine with Magento, providing faster and more accurate search results for your customers.
 
-  <p align="left">
-     <br />
-    <h4 align="left">This is currently just a proof of concept!</h3>
-    <br />
-    It's an Adapter Client for the main Algolia Magento 2 module.
-    <br />
-    We let the existing Open Source Algolia module handle indexing, queues etc, when the data is ready to be indexed it's pushed Typesense.
-    <br />
-    Why reinvent the wheel?
-  </p>
-</div>
+## Installation
 
+### Composer Installation
 
+You can install the module via Composer. Run the following command in your Magento 2 root directory:
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+```
+composer require develodesign/magento2-module-typesense
+```
 
-<!-- GETTING STARTED -->
-## Getting Started
+### Copying the Module
 
-Composer install this module, it will include the Algolia module as a dependancy. 
+Alternatively, you can copy the module files to the `app/code/Develo/Typesense` directory in your Magento 2 installation.
 
-### Installation
+```
+php bin/magento module:enable Develo_Typesense
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+bin/magento setup:static-content:deploy
+```
 
-   ```shell
-   composer require develodesign/magento2-module-typesense
-   ```
-   
-   Add Typesene Configuration
-   
-   System Config -> Type Sense -> Settings -> General
+That's it! The develodesign/magento2-module-typesense module is now installed on your Magento 2 store.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Configuration
 
+System > Configuration > General > Typesense Search:
 
-<!-- ROADMAP -->
-## Roadmap
+- "Enabled": A yes/no field to enable or disable the Typesense adapter.
+- "Cloud ID": A text field to enter the Typesense cloud ID.
+- "Admin API Key": A secret key to enter the Typesense admin API key.
+- "Search Only Key": A public key to enter the Typesense search only key.
+- "Nodes": A text field to enter the Typesense nodes.
+- "Port": A text field to enter the Typesense port number.
+- "Path": A text field to enter the Typesense path.
+- "Protocol": A dropdown field to select the communication protocol.
+- "Index Method": A dropdown field to select where the data should be indexed.
 
-- [x] Create Basic module and Config
-- [x] Index Product Data
-- [ ] Index Categories
-- [ ] Admin Facets
-- [ ] Loads More ....
+These options allow users to configure the Typesense adapter module and customize its behavior according to their needs.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+***After enabling the Typesense module, if a user makes any changes to the configuration, the module will need to drop and rebuild the collections. As a result, the user will need to perform a full Magento reindex after making any configuration changes. This is important to keep in mind to ensure that the search results are accurate and up-to-date.***
 
+Note that users also need to configure the Algolia module to fit you requirements. However, live credentials are not needed as our module acts as an adapter.
 
-<!-- CONTRIBUTING -->
-## Contributing
+The Typesense module uses the Algolia settings, so users should configure Algolia as they normally would. It's important to note that if you set a facet, you must also set it in the product attribute section.
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+For more information on customizing the Algolia module, please refer to the following links:
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+- [Customizing Autocomplete Menu](https://www.algolia.com/doc/integration/magento-2/customize/autocomplete-menu/)
+- [Customizing Instant Search Page](https://www.algolia.com/doc/integration/magento-2/customize/instant-search-page/)
+- [Customizing Custom Front-end Events](https://www.algolia.com/doc/integration/magento-2/customize/custom-front-end-events/)
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Documentation
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+For more information about Typesense, check out their [official documentation](https://typesense.org/docs/).
+
+You can also check out [Algolia's Magento 2 module](https://github.com/algolia/algoliasearch-magento-2).
+
+## Contributors
+
+| Name           | Email                                    | Twitter                       |
+| -------------- | ---------------------------------------- | ----------------------------- |
+| Luke Collymore | [luke@develodesign.co.uk](mailto:luke@develodesign.co.uk) | [@lukecollymore](https://twitter.com/lukecollymore) |
+| Nathan McBride | [nathan@brideo.co.uk](mailto:nathan@brideo.co.uk)    | [@brideoweb](https://twitter.com/brideoweb)    |
 
 
+### How to Contribute
 
-<!-- LICENSE -->
-## License
+Contributions are always welcome. If you have any suggestions or find any issues, please create a GitHub issue or fork the repository and submit a pull request.
 
-Distributed under the NU General Public License. See `LICENSE.txt` for more information.
+Here's how to contribute:
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a pull request.
 
-
-
-<!-- CONTACT -->
-## Contact
-Luke Collymore - [@lukecollymore](https://twitter.com/lukecollymore) - luke@develodesign.co.uk
-
-@Nathan McBride - nathan@brideo.co.uk
-
-Project Link: [https://github.com/develodesign/magento2-module-typesense](https://github.com/develodesign/magento2-module-typesense)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-Algolia for creating a great product indexing and search configuration module
-* [Algolia Open Source Module](https://github.com/algolia/algoliasearch-magento-2)
-* [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Algolia for creating a great product indexing and search configuration module
+
+* [Algolia Open Source Module](https://github.com/algolia/algoliasearch-magento-2)
+
