@@ -85,3 +85,8 @@ Algolia for creating a great product indexing and search configuration module
 
 * [Algolia Open Source Module](https://github.com/algolia/algoliasearch-magento-2)
 
+
+## Built and Maintained by 
+
+<a href="http://www.develodesign.co.uk" rel="Develo">![Develo](http://www.develodesign.co.uk/develo-logo.png)</a>
+
