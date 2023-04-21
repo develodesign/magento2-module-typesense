@@ -32,7 +32,7 @@ class ConfigService
      * @var EncryptorInterface $encryptor
      */
     protected EncryptorInterface $encryptor;
-    
+
     /**
      * @param EncryptorInterface $encryptor
      * @param ScopeConfigInterface $scopeConfig
@@ -121,13 +121,24 @@ class ConfigService
     }
 
     /**
-     * Check if Typesense Index Mode is TypesenseOnly
+     * @return bool
      */
     public function isIndexModeTypeSenseOnly(){
-        $indexMethod = $this->getIndexMethod();
-        if( $indexMethod == TypeSenseIndexMethod::METHOD_TYPESENSE ){
-            return true;
-        }
-        return false;
+        return  $this->getIndexMethod() === TypeSenseIndexMethod::METHOD_TYPESENSE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIndexModeBoth(){
+        return  $this->getIndexMethod() === TypeSenseIndexMethod::METHOD_BOTH;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTypeSenseEnabled()
+    {
+        return $this->isEnabled() && ($this->isIndexModeTypeSenseOnly() || $this->isIndexModeBoth());
     }
 }

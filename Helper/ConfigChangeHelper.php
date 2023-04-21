@@ -103,6 +103,9 @@ class ConfigChangeHelper
      */
     public function setCollectionConfig()
     {
+        if (!$this->configService->isTypeSenseEnabled()) {
+            return $this;
+        }
 
         $facets = [];
 
@@ -128,18 +131,20 @@ class ConfigChangeHelper
 
                 $indexName = $index["indexName"] . "_{$indexToCreate}";
 
-                if (!isset($existingCollections[$indexName])) {
-
-                    $this->typeSenseCollecitons->create(
-                        [
-                            'name' => $indexName,
-                            'enable_nested_fields' => true,
-                            'fields' => $fields
-                        ]
-                    );
-
-                    continue;
+                if (isset($existingCollections[$indexName])) {
+                    $this->typesenseClient->collections[$indexName]->delete();
+                    unset($existingCollections[$indexName]);
                 }
+
+
+                $this->typeSenseCollecitons->create(
+                    [
+                        'name' => $indexName,
+                        'enable_nested_fields' => true,
+                        'fields' => $fields
+                    ]
+                );
+
             }
         }
 
@@ -174,7 +179,8 @@ class ConfigChangeHelper
         return $indexNames;
     }
 
-    public function getFields(array $facets, array $sortingAttributes, string $index) : array {
+    public function getFields(array $facets, array $sortingAttributes, string $index): array
+    {
         switch ($index) {
             case 'products':
                 $attributes = $this->algoliaConfigHelper->getProductAdditionalAttributes();
@@ -185,6 +191,16 @@ class ConfigChangeHelper
                     ['name' => 'visibility_search', 'type' => 'int64'],
                     ['name' => 'visibility_catalog', 'type' => 'int64', 'facet' => true]
                 ];
+
+                // The hierarchal menu widget expects 10 levels of category.
+                for ($i = 0; $i < 10; $i++) {
+                    $defaultAttributes[] = [
+                        'name' => 'categories.level' . $i,
+                        'type' => 'string[]',
+                        'facet' => true,
+                        'optional' => true
+                    ];
+                }
 
                 break;
             case 'categories':
@@ -217,21 +233,8 @@ class ConfigChangeHelper
 
         $attributeCollection = $this->attributeRepository->getList($entityTypeCode, $searchCriteria->create());
 
-        $backendTypes = [
-            'datetime' => 'string',
-            'decimal' => 'float',
-            'int' => 'int64',
-            'static' => 'string',
-            'text' => 'string',
-            'varchar' => 'string'
-        ];
-
         $fields = [];
         foreach ($attributeCollection->getItems() as $attribute) {
-            if (!isset($backendTypes[$attribute->getBackendType()]) || !$attribute->getIsRequired()) {
-                continue;
-            }
-
             if ($attribute->getAttributeCode() === 'price') {
                 $fields[] = [
                     'name' => $attribute->getAttributeCode(),
@@ -258,12 +261,18 @@ class ConfigChangeHelper
                 continue;
             }
 
+            $isFacet = in_array($attribute->getAttributeCode(), $facets);
+
+            if (!$isFacet) {
+                continue;
+            }
+
             $fields[] = [
                 'name' => $attribute->getAttributeCode(),
-                'type' => $backendTypes[$attribute->getBackendType()],
-                'facet' => in_array($attribute->getAttributeCode(), $facets),
-                'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes) &&
-                    in_array($backendTypes[$attribute->getBackendType()], self::SORTABLE_ATTRIBUTES),
+                'type' => 'string[]',
+                'facet' => $isFacet,
+                'sort' => false,
+                'optional' => !$attribute->getIsRequired()
             ];
         }
 
@@ -274,7 +283,7 @@ class ConfigChangeHelper
         return array_values($fields);
     }
 
-    public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS) : string
+    public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS): string
     {
         $attributes = [];
         foreach ($this->getFields([], [], $index) as $field) {

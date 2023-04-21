@@ -2,6 +2,7 @@
 
 namespace Develo\Typesense\Adapter;
 
+use Algolia\AlgoliaSearch\Helper\ConfigHelper as AlgoliaConfigHelper;
 use Typesense\Client as TypeSenseClient;
 use Develo\Typesense\Services\ConfigService;
 use Algolia\AlgoliaSearch\Helper\Data as AlgoliaHelper;
@@ -16,20 +17,18 @@ use Algolia\AlgoliaSearch\Helper\Data as AlgoliaHelper;
  */
 class Client
 {
+    private ?array $facets = null;
+
     /**
      * @var ConfigService
      */
     private ConfigService $configService;
 
-    /**
-     * @var TypeSenseClient|null
-     */
     private ?TypeSenseClient $typeSenseClient = null;
 
-    /**
-     * $var AlgoliaHelper
-     */
-    private $algoliaHelper;
+    private AlgoliaHelper $algoliaHelper;
+
+    private AlgoliaConfigHelper $configHelper;
 
     /**
      * Initialise Typesense Client with Magento config
@@ -40,11 +39,13 @@ class Client
      */
     public function __construct(
         ConfigService $configService,
-        AlgoliaHelper $algoliaHelper
+        AlgoliaHelper $algoliaHelper,
+        AlgoliaConfigHelper $configHelper
     )
     {
         $this->configService = $configService;
         $this->algoliaHelper = $algoliaHelper;
+        $this->configHelper = $configHelper;
     }
 
     /**
@@ -63,6 +64,7 @@ class Client
      */
     public function addData($indexName, $data)
     {
+        $facets = [];
         foreach ($data as &$item) {
             $item['id'] = (string)$item['objectID'];
             $item['objectID'] = (string)$item['objectID'];
@@ -83,7 +85,14 @@ class Client
 
                 $price['default'] = number_format($price['default'], 2);
             }
+
+            foreach ($facets as $facet) {
+                if (isset($item[$facet]) && !is_array($item[$facet])) {
+                    $item[$facet] = [strval($item[$facet])];
+                }
+            }
         }
+
         $indexName = rtrim($indexName, "_tmp");
         return $this->getTypesenseClient()->collections[$indexName]->getDocuments()->import($data, ['action' => 'upsert']);
     }
@@ -138,6 +147,18 @@ class Client
             $this->typeSenseClient = $client;
         }
         return $this->typeSenseClient;
+    }
+
+    private function getFacets()
+    {
+        if (!is_array($this->facets)) {
+            $this->facets = [];
+            foreach ($this->configHelper->getFacets() as $facet) {
+                $this->facets[] = $facet['attribute'];
+            }
+        }
+
+        return $this->facets;
     }
 
 }
