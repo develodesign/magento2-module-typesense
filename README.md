@@ -53,6 +53,20 @@ For more information on customizing the Algolia module, please refer to the foll
 - [Customizing Instant Search Page](https://www.algolia.com/doc/integration/magento-2/customize/instant-search-page/)
 - [Customizing Custom Front-end Events](https://www.algolia.com/doc/integration/magento-2/customize/custom-front-end-events/)
 
+When migrating from Algolia, you will need to remove "Price" from the facets and review the Product and Category searchable attributes. Typesense is much more strict when querying so if an attribute does not exist it will throw an error.
+
+Review the following config and set searchable to "No" when applicable:
+
+Settings > Algolia > Products > Attributes
+
+## Debugging config
+
+You may get errors such as:
+
+`pesense-adapter.js:1 Uncaught (in promise) Error: 404 - Could not find a field named "path" in the schema.`
+
+This is because you either have a searchable attribute for products which does not exist, or perhaps a facet attribute which does not exist. You should remove the attribute from these areas and try again.
+
 ## Documentation
 
 For more information about Typesense, check out their [official documentation](https://typesense.org/docs/).

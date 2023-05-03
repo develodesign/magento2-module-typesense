@@ -4,4 +4,10 @@
     <head>
         <script src="Develo_Typesense::js/magento-adapter.js"/>
     </head>
+
+    <referenceBlock name="algolia.autocomplete.page">
+        <action method="setTemplate">
+            <argument name="template" xsi:type="string">Develo_Typesense::autocomplete/page.phtml</argument>
+        </action>
+    </referenceBlock>
 </page>
