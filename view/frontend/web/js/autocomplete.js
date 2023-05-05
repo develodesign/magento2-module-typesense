@@ -1,7 +1,11 @@
-const initAutoComplete = () => {
+requirejs([
+    'algoliaBundle',
+    'Develo_Typesense/js/typesense.min',
+    'domReady!'
+], function (algoliaBundle, Typesense) {
     algoliaBundle.$(function ($) {
 
-        const {autocomplete} = window['@algolia/autocomplete-js'];
+        const {autocomplete} = algoliaBundle;
         const {resultURL} = algoliaConfig;
 
         if (algoliaConfig.autocomplete.nbOfProductsSuggestions > 0) {
@@ -100,9 +104,8 @@ const initAutoComplete = () => {
             plugins.push(...extraPlugins)
         }
 
-
         autocomplete({
-                container: '#algolia-autocomplete-container',
+                container: '#algoliaAutocomplete',
                 placeholder: algoliaConfig.translations.placeholder,
                 debug: algoliaConfig.autocomplete.isDebugEnabled,
                 plugins,
@@ -206,4 +209,4 @@ const initAutoComplete = () => {
             }
         );
     })
-};
+});

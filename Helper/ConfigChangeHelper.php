@@ -2,6 +2,7 @@
 
 namespace Develo\Typesense\Helper;
 
+use Algolia\AlgoliaSearch\Helper\ConfigHelper;
 use Algolia\AlgoliaSearch\Helper\Data as AlgoliaHelper;
 use Algolia\AlgoliaSearch\Helper\ConfigHelper as AlgoliaConfigHelper;
 use Develo\Typesense\Adapter\Client;
@@ -136,7 +137,6 @@ class ConfigChangeHelper
                     unset($existingCollections[$indexName]);
                 }
 
-
                 $this->typeSenseCollecitons->create(
                     [
                         'name' => $indexName,
@@ -189,7 +189,20 @@ class ConfigChangeHelper
                     ['name' => 'objectID', 'type' => 'string', 'facet' => true],
                     ['name' => 'categories', 'type' => 'object', 'facet' => true],
                     ['name' => 'visibility_search', 'type' => 'int64'],
-                    ['name' => 'visibility_catalog', 'type' => 'int64', 'facet' => true]
+                    ['name' => 'visibility_catalog', 'type' => 'int64', 'facet' => true],
+                    [
+                        'name' => 'price_default',
+                        'type' => 'float',
+                        'sort' => true,
+                        'facet' => true
+                    ],
+
+                    [
+                        'name' => 'sku',
+                        'type' => 'string[]',
+                        'facet' => in_array('sku', $facets),
+                        'sort' => in_array('sku', $sortingAttributes)
+                    ]
                 ];
 
                 // The hierarchal menu widget expects 10 levels of category.
@@ -222,7 +235,7 @@ class ConfigChangeHelper
 
         $attributeCodes = [];
         foreach ($attributes as $attribute) {
-            if ($attribute['searchable'] === '1' || in_array($attribute['attribute'], $facets)) {
+            if ($attribute['searchable'] === '1') {
                 $attributeCodes[] = $attribute['attribute'];
             }
         }
@@ -234,44 +247,19 @@ class ConfigChangeHelper
         $attributeCollection = $this->attributeRepository->getList($entityTypeCode, $searchCriteria->create());
 
         $fields = [];
+
         foreach ($attributeCollection->getItems() as $attribute) {
-            if ($attribute->getAttributeCode() === 'price') {
-                $fields[] = [
-                    'name' => $attribute->getAttributeCode(),
-                    'type' => 'object'
-                ];
-
-                $fields[] = [
-                    'name' => 'price_default',
-                    'type' => 'float',
-                    'sort' => true
-                ];
-
-                continue;
-            }
-
-            if ($attribute->getAttributeCode() === 'sku') {
-                $fields[] = [
-                    'name' => $attribute->getAttributeCode(),
-                    'type' => 'string[]',
-                    'facet' => in_array($attribute->getAttributeCode(), $facets),
-                    'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes),
-                ];
-
+            if (in_array($attribute->getAttributeCode(), ['price', 'sku'])) {
                 continue;
             }
 
             $isFacet = in_array($attribute->getAttributeCode(), $facets);
 
-            if (!$isFacet) {
-                continue;
-            }
-
             $fields[] = [
                 'name' => $attribute->getAttributeCode(),
-                'type' => 'string[]',
+                'type' => $isFacet ? 'string[]' : 'string',
                 'facet' => $isFacet,
-                'sort' => false,
+                'sort' => in_array($attribute->getAttributeCode(), $sortingAttributes),
                 'optional' => !$attribute->getIsRequired()
             ];
         }
@@ -286,14 +274,24 @@ class ConfigChangeHelper
     public function getSearchableAttributes(string $index = self::INDEX_PRODUCTS): string
     {
         $attributes = [];
-        foreach ($this->getFields([], [], $index) as $field) {
-            if (!in_array($field['type'], ['string', 'string[]'])) {
-                continue;
-            }
-
-            $attributes[] = $field['name'];
+        switch ($index) {
+            case 'products':
+                $attributes = $this->algoliaConfigHelper->getProductAdditionalAttributes();
+                break;
+            case 'categories':
+                $attributes = $this->algoliaConfigHelper->getCategoryAdditionalAttributes();
+                break;
+            case 'pages':
+                return 'name,slug';
         }
 
-        return implode(',', $attributes);
+        $searchableAttributes = [];
+        foreach ($attributes as $attribute) {
+            if ($attribute['searchable'] === '1') {
+                $searchableAttributes[] = $attribute['attribute'];
+            }
+        }
+
+        return implode(',', $searchableAttributes);
     }
 }

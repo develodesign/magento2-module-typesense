@@ -64,7 +64,7 @@ class Client
      */
     public function addData($indexName, $data)
     {
-        $facets = [];
+        $facets = $this->getFacets();
         foreach ($data as &$item) {
             $item['id'] = (string)$item['objectID'];
             $item['objectID'] = (string)$item['objectID'];
