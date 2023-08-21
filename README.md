@@ -18,6 +18,7 @@ Alternatively, you can copy the module files to the `app/code/Develo/Typesense` 
 
 ```
 php bin/magento module:enable Develo_Typesense
+php bin/magento module:enable Algolia_AlgoliaSearch
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
 bin/magento setup:static-content:deploy
