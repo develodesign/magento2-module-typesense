@@ -28,13 +28,14 @@ class SaveSettings
 
     public function aroundExecute(
         \Algolia\AlgoliaSearch\Model\Observer\SaveSettings $subject,
-        \Closure $proceed
+        \Closure $proceed,
+        ...$args
     ) {
         if($this->configService->isIndexModeTypeSenseOnly()){
             return;
         }
 
-        $result = $proceed();
+        $result = $proceed(...$args);
 
         return $result;
     }
