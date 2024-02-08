@@ -2,6 +2,10 @@
 
 This module integrates the Typesense search engine with Magento, providing faster and more accurate search results for your customers.
 
+# Demo
+You can see a demo of both Typesense used for the Autocomplete search bar and Typesense powered Category page rendering with filters. 
+https://typesense-demo.develodesign.co.uk/
+
 ## Installation
 
 ### Composer Installation
